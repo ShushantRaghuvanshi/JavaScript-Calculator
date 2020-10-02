@@ -134,3 +134,98 @@ input_element.addEventListener("click", event => {
     
 });
 
+function calculator( button ){
+    if( button.type == "operator" ){
+        data.operation.push(button.symbol);
+        data.result.push(button.formula);
+    }
+    else if( button.type == "number" ){
+        data.operation.push(button.symbol);
+        data.result.push(button.formula);
+    }
+    else if( button.type == "key" ){
+        if( button.name == "clear" ){
+            data.operation = [];
+            data.result = [];
+            updateOutputResult(0);
+        }
+        else if( button.name == "delete" ){
+            data.result.pop();
+            data.operation.pop();            
+        }
+    }
+    else if( button.type == "calculate" ){
+        
+        // PUSH WHAT'S LEFT IN TEMP TO RESULT AND JOIN RESULT
+        let result_joined = data.result.join('');
+
+        // CLEAR ALL ARRAYS, NO NEED TO SAVE ANYTHING ANYMORE
+        data.operation = [];
+        data.result = [];
+
+        // CHECK IF THERE WAS A SYNATX ERROR IN THE operation
+        let result_final;
+        try {
+            result_final = eval(result_joined); 
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                result_final = "Syntax Error!"
+                updateOutputResult( result_final );
+                return;
+            }
+        }
+
+        // FORMAT THE RESULT
+        result_final = formatResult(result_final);
+
+        // SAVE RESULT FOR ANY FUTURE USE
+        data.operation.push(result_final);
+        data.result.push(result_final);
+        
+        // UPDATE OUTPUT
+        updateOutputResult( result_final );
+
+        return;
+    }
+
+    updateOutputOperation( data.operation.join('') );
+}
+
+function updateOutputOperation(operation){
+    output_operation_element.innerHTML = operation;
+}
+
+function updateOutputResult(result){
+    output_result_element.innerHTML = result;
+}
+
+function digitCounter(number){
+    return number.toString().length;
+}
+
+function isFloat(number){
+    return number % 1 != 0;
+}
+
+const max_output_number_length = 10;
+const output_precision = 5;
+
+function formatResult( result ){
+    if( digitCounter(result) > max_output_number_length){
+        if( isFloat(result) ){
+            const result_int = parseInt(result);
+            const result_int_length = digitCounter(result_int);
+
+            if( result_int_length > max_output_number_length ){
+                return result.toPrecision(output_precision);
+            }else{
+                const num_digits_after_point = max_output_number_length - result_int_length;
+                return result.toFixed(num_digits_after_point);
+            }
+        }else{
+            return result.toPrecision(output_precision);
+        }
+    }else{
+        return result;
+    }
+}
