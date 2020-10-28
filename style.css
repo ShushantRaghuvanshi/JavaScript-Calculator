@@ -111,3 +111,17 @@ html{
     font-weight: bold;
 }
 
+.row #calculate{
+    color: #FFF;
+    background-color: #46e0bc;
+    width : 121px;
+    border-radius: 50px;
+}
+.row #delete{
+    color: #FFF;
+    background-color: #e05046;
+}
+
+#division, #multiplication, #subtraction, #addition {
+    color: #18b893;
+}
